@@ -1,5 +1,18 @@
-# Run templ generation in watch mode to detect all .templ files and 
-# re-create _templ.txt files on change, then send reload event to browser. 
+ifndef GOPATH
+	GOPATH := $(HOME)/go
+	export GOPATH
+endif
+
+CSS_TEMPLATE=assets/css/template.css
+CSS_FILE=assets/css/input.css
+
+subst-templui-source:
+	cat $(CSS_TEMPLATE) > $(CSS_FILE)
+	sed -i.bak -e "s|{GOPATH}|$(GOPATH)|g" $(CSS_FILE)
+	rm $(CSS_FILE).bak
+
+# Run templ generation in watch mode to detect all .templ files and
+# re-create _templ.txt files on change, then send reload event to browser.
 # Default url: http://localhost:7331
 templ:
 	templ generate --watch --proxy="http://localhost:8090" --open-browser=false -v
@@ -15,8 +28,10 @@ server:
 	--build.stop_on_error "false" \
 	--misc.clean_on_exit true
 
-tailwind-clean:
-	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --clean
+tailwind-clean: subst-templui-source
+
+# tailwind-clean:
+# 	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --clean
 
 # Run tailwindcss to generate the styles.css bundle in watch mode.
 tailwind-watch:

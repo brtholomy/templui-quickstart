@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/axzilla/templui-quickstart/assets"
@@ -16,6 +17,8 @@ func main() {
 	mux := http.NewServeMux()
 	SetupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
+	mux.Handle("GET /foo", templ.Handler(pages.Foo()))
+	mux.Handle("GET /time", templ.Handler(pages.Time(time.Now())))
 	fmt.Println("Server is running on http://localhost:8090")
 	http.ListenAndServe(":8090", mux)
 }
