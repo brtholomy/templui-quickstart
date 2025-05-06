@@ -18,7 +18,12 @@ func main() {
 	SetupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
 	mux.Handle("GET /foo", templ.Handler(pages.Foo()))
+	mux.Handle("GET /file", templ.Handler(pages.File()))
 	mux.Handle("GET /time", templ.Handler(pages.Time(time.Now())))
+	mux.HandleFunc("GET /task/{id}", func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		fmt.Fprintf(w, "handling task with id=%v\n", id)
+	})
 	fmt.Println("Server is running on http://localhost:8090")
 	http.ListenAndServe(":8090", mux)
 }

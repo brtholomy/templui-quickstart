@@ -28,10 +28,8 @@ server:
 	--build.stop_on_error "false" \
 	--misc.clean_on_exit true
 
-tailwind-clean: subst-templui-source
-
-# tailwind-clean:
-# 	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --clean
+tailwind-clean:
+	tailwindcss -i ./assets/css/input.css -o ./assets/css/output.css --clean
 
 # Run tailwindcss to generate the styles.css bundle in watch mode.
 tailwind-watch:
@@ -39,5 +37,5 @@ tailwind-watch:
 
 # Start development server
 dev:
-	make tailwind-clean
-	make -j3 templ server tailwind-watch
+	make subst-templui-source tailwind-clean
+	make -j3 tailwind-watch templ server

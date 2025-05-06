@@ -1,0 +1,17 @@
+package pages
+
+import (
+	"github.com/axzilla/templui-quickstart/ui/layouts"
+	"github.com/axzilla/templui/component/input"
+)
+
+templ File() {
+	@layouts.BaseLayout() {
+		<div class="block w-full text-sm text-gray-900 border
+	border-gray-300 rounded-lg cursor-pointer bg-gray-500 placeholder-gray-400 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400">
+		<div class="w-full max-w-sm">
+			@input.Input(input.Props{Type: input.TypeFile})
+		</div>
+		</div>
+	}
+}

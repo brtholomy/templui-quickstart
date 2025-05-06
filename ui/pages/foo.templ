@@ -8,8 +8,8 @@ import (
 
 templ Foo() {
 	@layouts.BaseLayout() {
-		<div class="mx-4 my-8 bg-red-500 flex justify-center min-h-screen">
-		<div class="bg-green-500 items-center">
+		<div class="mx-4 my-5 bg-gray-500 flex justify-center min-h-screen">
+		<div class="bg-blue-300 items-center">
 			@modal.Trigger(modal.TriggerProps{
 				ModalID: "default-modal",
 			}) {
@@ -19,7 +19,6 @@ templ Foo() {
 			}
 			@modal.Modal(modal.Props{
 				ID:    "default-modal",
-				Class: "max-w-md",
 			}) {
 				@modal.Header() {
 					Are you sure?
