@@ -8,14 +8,63 @@ import (
 	quickbooks "github.com/rwestlund/quickbooks-go"
 )
 
+var estimatestr string = `{
+  "TotalAmt": 31.5,
+  "Line": [
+    {
+      "Description": "Pest Control Services",
+      "DetailType": "SalesItemLineDetail",
+      "SalesItemLineDetail": {
+        "TaxCodeRef": {
+          "value": "NON"
+        },
+        "Qty": 1,
+        "UnitPrice": 35,
+        "ItemRef": {
+          "name": "Pest Control",
+          "value": "10"
+        }
+      },
+      "LineNum": 1,
+      "Amount": 35.0,
+      "Id": "1"
+    },
+    {
+      "DetailType": "SubTotalLineDetail",
+      "Amount": 35.0,
+      "SubTotalLineDetail": {}
+    },
+    {
+      "DetailType": "DiscountLineDetail",
+      "Amount": 3.5,
+      "DiscountLineDetail": {
+        "DiscountAccountRef": {
+          "name": "Discounts given",
+          "value": "86"
+        },
+        "PercentBased": true,
+        "DiscountPercent": 10
+      }
+    }
+  ],
+  "CustomerRef": {
+    "name": "Cool Cars",
+    "value": "3"
+  },
+  "TxnTaxDetail": {
+    "TotalTax": 0
+  },
+  "ApplyTaxAfterDiscount": false
+}`
+
 func FillEstimate() quickbooks.Estimate {
-	dat, err := os.ReadFile("./estimate.json")
-	if err != nil {
-		panic(err)
-	}
+	// dat, err := os.ReadFile("./estimate.json")
+	// if err != nil {
+	// 	panic(err)
+	// }
 
 	var estimate quickbooks.Estimate
-	if err := json.Unmarshal(dat, &estimate); err != nil {
+	if err := json.Unmarshal([]byte(estimatestr), &estimate); err != nil {
 		panic(err)
 	}
 	return estimate
