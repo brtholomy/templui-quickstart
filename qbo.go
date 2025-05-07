@@ -36,6 +36,7 @@ func LoadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error)
 	clientId := os.Getenv("CLIENT_ID")
 	clientSecret := os.Getenv("SECRET")
 	realmId := os.Getenv("REALM_ID")
+	fmt.Println(clientId, clientSecret, realmId)
 	return quickbooks.NewClient(clientId, clientSecret, realmId, false, "", token)
 }
 

@@ -34,9 +34,13 @@ func main() {
 }
 
 func InitDotEnv() {
-	err := godotenv.Load("/.env", "./.env")
+	err := godotenv.Load("/etc/secrets/.env")
 	if err != nil {
-		fmt.Println("Error loading .env file")
+		fmt.Println("Error loading prod .env file")
+	}
+	err = godotenv.Load()
+	if err != nil {
+		fmt.Println("Error loading local .env file")
 	}
 }
 
