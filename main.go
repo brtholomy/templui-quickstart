@@ -34,7 +34,7 @@ func main() {
 }
 
 func InitDotEnv() {
-	err := godotenv.Load("./.env")
+	err := godotenv.Load("/.env", "./.env")
 	if err != nil {
 		fmt.Println("Error loading .env file")
 	}
