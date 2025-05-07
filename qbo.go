@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"os"
 
+	"github.com/brtholomy/templui-quickstart/ui/pages"
 	quickbooks "github.com/rwestlund/quickbooks-go"
 )
 
@@ -57,6 +59,21 @@ var estimatestr string = `{
   "ApplyTaxAfterDiscount": false
 }`
 
+func NewQboHandler(request func(string) string) QboHandler {
+	return QboHandler{Request: request}
+}
+
+type QboHandler struct {
+	// must match the signature of the QboRequest func below.
+	Request func(string) string
+}
+
+// implements the HTTP handler interface on the QboHandler type.
+func (qh QboHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	// NOTE: can pass in http.Request fields and methods.
+	pages.Qbo(qh.Request(r.UserAgent())).Render(r.Context(), w)
+}
+
 func FillEstimate() quickbooks.Estimate {
 	// dat, err := os.ReadFile("./estimate.json")
 	// if err != nil {
@@ -89,7 +106,7 @@ func LoadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error)
 	return quickbooks.NewClient(clientId, clientSecret, realmId, false, "", token)
 }
 
-func MakeRequest() string {
+func QboRequest(agent string) string {
 	// FIXME: load from DB:
 	token := quickbooks.BearerToken{
 		RefreshToken: os.Getenv("REFRESH_TOKEN"),
@@ -132,5 +149,5 @@ func MakeRequest() string {
 	if err != nil {
 		panic(err)
 	}
-	return string(jsonBytes)
+	return agent + string(jsonBytes)
 }
