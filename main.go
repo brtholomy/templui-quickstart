@@ -17,6 +17,11 @@ func main() {
 	mux := http.NewServeMux()
 	SetupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
+
+	// https://templ.guide/server-side-rendering/creating-an-http-server-with-templ#displaying-dynamic-data
+	output := MakeRequest()
+	mux.Handle("GET /qbo", templ.Handler(pages.Qbo(output)))
+
 	mux.Handle("GET /foo", templ.Handler(pages.Foo()))
 	mux.Handle("GET /file", templ.Handler(pages.File()))
 	mux.Handle("GET /time", templ.Handler(pages.Time(time.Now())))
