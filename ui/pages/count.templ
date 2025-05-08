@@ -8,17 +8,15 @@ import (
 )
 
 templ counts(global, user int) {
+		<div id="counts">
 		<div>Global: { strconv.Itoa(global) }</div>
 		<div>User: { strconv.Itoa(user) }</div>
+		</div>
 }
 
 templ ButtonHtmxLoading() {
 		<div class="w-full max-w-sm">
-		<form
-		 class="flex flex-col gap-2"
-		 action="/counter"
-		 method="POST"
-				>
+        <form action="/counter" method="POST" hx-post="/counter" hx-select="#counts" hx-target="#counts" hx-swap="innerHTML">
 				@form.Item() {
 				@form.ItemFlex() {
 						@button.Button(button.Props{
@@ -26,7 +24,7 @@ templ ButtonHtmxLoading() {
 								Class: "flex items-center gap-2",
 								Attributes: templ.Attributes{"name": "global"},
 						}) {
-								Global
+								Htmx Global
 						}
 				}
 				@form.Description() {
@@ -47,7 +45,7 @@ templ ButtonHtmxLoading() {
 							Class: "flex items-center gap-2",
 							Attributes: templ.Attributes{"name": "global"},
 					}) {
-							Global
+							POST Global
 					}
 			</form>
 			<div id="toast-container"></div>
