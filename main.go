@@ -38,6 +38,13 @@ func main() {
 	// https://templ.guide/server-side-rendering/creating-an-http-server-with-templ#displaying-dynamic-data
 	mux.Handle("GET /qbo", NewQboHandler(QboRequest))
 
+	mux.HandleFunc("GET /counter", func(w http.ResponseWriter, r *http.Request) {
+		CounterGetHandler(w, r)
+	})
+	mux.HandleFunc("POST /counter", func(w http.ResponseWriter, r *http.Request) {
+		CounterPostHandler(w, r)
+	})
+
 	// just for clarity's sake, the New* factory method thing is not necessary:
 	nh := NowHandler{Now: time.Now}
 	mux.Handle("GET /now", nh)

@@ -59,19 +59,20 @@ var estimatestr string = `{
   "ApplyTaxAfterDiscount": false
 }`
 
-func NewQboHandler(request func(string) string) QboHandler {
+func NewQboHandler(request func(*http.Request) string) QboHandler {
 	return QboHandler{Request: request}
 }
 
 type QboHandler struct {
 	// must match the signature of the QboRequest func below.
-	Request func(string) string
+	Request func(r *http.Request) string
 }
 
 // implements the HTTP handler interface on the QboHandler type.
 func (qh QboHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// NOTE: can pass in http.Request fields and methods.
-	pages.Qbo(qh.Request(r.UserAgent())).Render(r.Context(), w)
+	resp := qh.Request(r)
+	pages.Qbo(resp).Render(r.Context(), w)
 }
 
 func FillEstimate() quickbooks.Estimate {
@@ -106,7 +107,7 @@ func LoadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error)
 	return quickbooks.NewClient(clientId, clientSecret, realmId, false, "", token)
 }
 
-func QboRequest(agent string) string {
+func QboRequest(req *http.Request) string {
 	// FIXME: load from DB:
 	token := quickbooks.BearerToken{
 		RefreshToken: os.Getenv("REFRESH_TOKEN"),
@@ -144,10 +145,9 @@ func QboRequest(agent string) string {
 	if err != nil {
 		panic(err)
 	}
-
 	jsonBytes, err := json.MarshalIndent(estresp, "", "  ")
 	if err != nil {
 		panic(err)
 	}
-	return agent + string(jsonBytes)
+	return fmt.Sprintf("%v\n%v\n%v\n", req.URL.Path, req.URL.RawQuery, string(jsonBytes))
 }
