@@ -1,54 +1,61 @@
 package pages
 
 import (
-		"github.com/brtholomy/templui-quickstart/ui/layouts"
-		"github.com/axzilla/templui/component/button"
-		"github.com/axzilla/templui/component/form"
-		"strconv"
+	"github.com/brtholomy/templui-quickstart/ui/layouts"
+	"github.com/axzilla/templui/component/button"
+	"github.com/axzilla/templui/component/form"
+	"strconv"
 )
 
 templ counts(global, user int) {
-		<div id="counts">
+	<div id="counts">
 		<div>Global: { strconv.Itoa(global) }</div>
 		<div>User: { strconv.Itoa(user) }</div>
-		</div>
+	</div>
 }
 
 templ ButtonHtmxLoading() {
-		<div class="w-full max-w-sm">
-        <form action="/counter" method="POST" hx-post="/counter" hx-select="#counts" hx-target="#counts" hx-swap="innerHTML">
-				@form.Item() {
+	<div class="w-full max-w-sm">
+		<form
+		 action="/counter"
+		 method="POST"
+		 hx-post="/counter"
+		 hx-select="#counts"
+		 hx-target="#counts"
+		 hx-swap="innerHTML"
+			>
+			@form.Item() {
 				@form.ItemFlex() {
-						@button.Button(button.Props{
-								Type:  button.TypeSubmit,
-								Class: "flex items-center gap-2",
-								Attributes: templ.Attributes{"name": "global"},
-						}) {
-								Htmx Global
-						}
+					@button.Button(button.Props{
+						Type:  button.TypeSubmit,
+						Class: "flex items-center gap-2",
+						Attributes: templ.Attributes{"name": "global"},
+					}) {
+						Htmx Global
+					}
 				}
 				@form.Description() {
-						button inside form
+					button inside form
 				}
-				}
+			}
 		</form>
-		</div>
+	</div>
 
 	<div class="flex flex-wrap items-center gap-2">
-			<form
-			 class="flex flex-col gap-2"
-			 action="/counter"
-			 method="POST"
-					>
-					@button.Button(button.Props{
-							Type:  button.TypeSubmit,
-							Class: "flex items-center gap-2",
-							Attributes: templ.Attributes{"name": "global"},
-					}) {
-							POST Global
-					}
-			</form>
-			<div id="toast-container"></div>
+		<form
+		 class="flex flex-col gap-2"
+		 action="/counter"
+		 method="POST"
+			>
+			@button.Button(button.Props{
+				Type:  button.TypeSubmit,
+				Class: "flex items-center gap-2",
+				Attributes: templ.Attributes{"name": "global"},
+			}) {
+				POST Global
+			}
+		</form>
+		<div id="toast-container"></div>
 	</div>
 }
 
@@ -60,8 +67,8 @@ templ ButtonHtmxLoading() {
 // }
 
 templ Counter(global, user int) {
-		@layouts.BaseLayout() {
-				@counts(global, user)
-				@ButtonHtmxLoading()
-		}
+	@layouts.BaseLayout() {
+		@counts(global, user)
+		@ButtonHtmxLoading()
+	}
 }
