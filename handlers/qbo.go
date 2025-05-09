@@ -1,4 +1,4 @@
-package main
+package handlers
 
 import (
 	"encoding/json"
@@ -9,55 +9,6 @@ import (
 	"github.com/brtholomy/templui-quickstart/ui/pages"
 	quickbooks "github.com/rwestlund/quickbooks-go"
 )
-
-var estimatestr string = `{
-  "TotalAmt": 31.5,
-  "Line": [
-    {
-      "Description": "Pest Control Services",
-      "DetailType": "SalesItemLineDetail",
-      "SalesItemLineDetail": {
-        "TaxCodeRef": {
-          "value": "NON"
-        },
-        "Qty": 1,
-        "UnitPrice": 35,
-        "ItemRef": {
-          "name": "Pest Control",
-          "value": "10"
-        }
-      },
-      "LineNum": 1,
-      "Amount": 35.0,
-      "Id": "1"
-    },
-    {
-      "DetailType": "SubTotalLineDetail",
-      "Amount": 35.0,
-      "SubTotalLineDetail": {}
-    },
-    {
-      "DetailType": "DiscountLineDetail",
-      "Amount": 3.5,
-      "DiscountLineDetail": {
-        "DiscountAccountRef": {
-          "name": "Discounts given",
-          "value": "86"
-        },
-        "PercentBased": true,
-        "DiscountPercent": 10
-      }
-    }
-  ],
-  "CustomerRef": {
-    "name": "Cool Cars",
-    "value": "3"
-  },
-  "TxnTaxDetail": {
-    "TotalTax": 0
-  },
-  "ApplyTaxAfterDiscount": false
-}`
 
 func NewQboHandler(request func(*http.Request) string) QboHandler {
 	return QboHandler{Request: request}
@@ -76,15 +27,12 @@ func (qh QboHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func FillEstimate() quickbooks.Estimate {
-	// dat, err := os.ReadFile("./estimate.json")
-	// if err != nil {
-	// 	panic(err)
-	// }
-
 	var estimate quickbooks.Estimate
-	if err := json.Unmarshal([]byte(estimatestr), &estimate); err != nil {
+	if err := json.Unmarshal([]byte(ESTIMATE), &estimate); err != nil {
 		panic(err)
 	}
+	estimate.CustomerRef.Value = "2"
+	estimate.Line[0].Description = "BTH RULES"
 	return estimate
 
 	// l := quickbooks.Line{
@@ -103,7 +51,6 @@ func LoadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error)
 	clientId := os.Getenv("CLIENT_ID")
 	clientSecret := os.Getenv("SECRET")
 	realmId := os.Getenv("REALM_ID")
-	fmt.Println(clientId, clientSecret, realmId)
 	return quickbooks.NewClient(clientId, clientSecret, realmId, false, "", token)
 }
 
@@ -127,19 +74,13 @@ func QboRequest(req *http.Request) string {
 	// 	panic(err)
 	// }
 
-	// When the token expire, you can use the following function
+	// TODO: figure out how often to refresh?
 	_, err = client.RefreshToken(token.RefreshToken)
 	if err != nil {
 		panic(err)
 	}
 
-	// Make a request!
-	info, err := client.FindCompanyInfo()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println(info)
-
+	// make a more interesting request:
 	estimate := FillEstimate()
 	estresp, err := client.CreateEstimate(&estimate)
 	if err != nil {

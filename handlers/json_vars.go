@@ -1,5 +1,6 @@
-{
-  "TotalAmt": 31.5,
+package handlers
+
+var ESTIMATE string = `{
   "Line": [
     {
       "Description": "Pest Control Services",
@@ -45,4 +46,4 @@
     "TotalTax": 0
   },
   "ApplyTaxAfterDiscount": false
-}
+}`

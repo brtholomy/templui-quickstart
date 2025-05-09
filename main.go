@@ -8,25 +8,10 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/brtholomy/templui-quickstart/assets"
+	"github.com/brtholomy/templui-quickstart/handlers"
 	"github.com/brtholomy/templui-quickstart/ui/pages"
 	"github.com/joho/godotenv"
 )
-
-// convenience allocation function.
-func NewNowHandler(now func() time.Time) NowHandler {
-	return NowHandler{Now: now}
-}
-
-// the type which will implement the interface.
-type NowHandler struct {
-	Now func() time.Time
-}
-
-// implement the HTTP handler interface
-// https://pkg.go.dev/net/http#Handler
-func (nh NowHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	pages.Time(nh.Now()).Render(r.Context(), w)
-}
 
 func main() {
 	InitDotEnv()
@@ -36,19 +21,20 @@ func main() {
 
 	// dynamic:
 	// https://templ.guide/server-side-rendering/creating-an-http-server-with-templ#displaying-dynamic-data
-	mux.Handle("GET /qbo", NewQboHandler(QboRequest))
+	mux.Handle("GET /qbo", handlers.NewQboHandler(handlers.QboRequest))
 
 	mux.HandleFunc("GET /counter", func(w http.ResponseWriter, r *http.Request) {
-		CounterGetHandler(w, r)
+		handlers.CounterGetHandler(w, r)
 	})
 	mux.HandleFunc("POST /counter", func(w http.ResponseWriter, r *http.Request) {
-		CounterPostHandler(w, r)
+		handlers.CounterPostHandler(w, r)
 	})
 
 	// just for clarity's sake, the New* factory method thing is not necessary:
-	nh := NowHandler{Now: time.Now}
+	nh := handlers.NowHandler{Now: time.Now}
 	mux.Handle("GET /now", nh)
 
+	// static build-time version:
 	mux.Handle("GET /time", templ.Handler(pages.Time(time.Now())))
 
 	mux.Handle("GET /foo", templ.Handler(pages.Foo()))
