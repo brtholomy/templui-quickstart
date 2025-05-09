@@ -47,3 +47,21 @@ var ESTIMATE string = `{
   },
   "ApplyTaxAfterDiscount": false
 }`
+
+var INVOICE string = `{
+  "Line": [
+    {
+      "DetailType": "SalesItemLineDetail",
+      "Amount": 100.0,
+      "SalesItemLineDetail": {
+        "ItemRef": {
+          "name": "Services",
+          "value": "1"
+        }
+      }
+    }
+  ],
+  "CustomerRef": {
+    "value": "1"
+  }
+}`

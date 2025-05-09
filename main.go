@@ -21,7 +21,15 @@ func main() {
 
 	// dynamic:
 	// https://templ.guide/server-side-rendering/creating-an-http-server-with-templ#displaying-dynamic-data
-	mux.Handle("GET /qbo", handlers.NewQboHandler(handlers.QboRequest))
+	// mux.Handle("GET /qbo", handlers.NewQboHandler(handlers.GetInvoice))
+	// mux.Handle("POST /qbo", handlers.NewQboHandler(handlers.ProcessInvoice))
+
+	mux.HandleFunc("GET /qbo", func(w http.ResponseWriter, r *http.Request) {
+		handlers.QboGetHandler(w, r, "0.00", "")
+	})
+	mux.HandleFunc("POST /qbo", func(w http.ResponseWriter, r *http.Request) {
+		handlers.QboPostHandler(w, r)
+	})
 
 	mux.HandleFunc("GET /counter", func(w http.ResponseWriter, r *http.Request) {
 		handlers.CounterGetHandler(w, r)
