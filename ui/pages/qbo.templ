@@ -13,15 +13,8 @@ import (
 // 		}
 // }
 
-templ Qbo(amount, docnum string) {
+templ Qbo(amount, resp string) {
 	@layouts.BaseLayout() {
-		<div id="amount">
-			<h2> Received back from QBO API
-			</h2>
-			<div>amount: { amount }</div>
-			<div>docnum: { docnum }</div>
-		</div>
-
 		<div class="w-full max-w-sm">
 			<form
 			 action="/qbo"
@@ -57,5 +50,13 @@ templ Qbo(amount, docnum string) {
 				}
 			</form>
 		</div>
+
+		<div id="amount">
+			<h2> Received back from QBO API
+			</h2>
+			<div>amount: { amount }</div>
+			<pre>resp: { resp }</pre>
+		</div>
+
 	}
 }

@@ -62,6 +62,6 @@ var INVOICE string = `{
     }
   ],
   "CustomerRef": {
-    "value": "1"
+    "value": "2"
   }
 }`

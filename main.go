@@ -25,7 +25,7 @@ func main() {
 	// mux.Handle("POST /qbo", handlers.NewQboHandler(handlers.ProcessInvoice))
 
 	mux.HandleFunc("GET /qbo", func(w http.ResponseWriter, r *http.Request) {
-		handlers.QboGetHandler(w, r, "0.00", "")
+		handlers.QboGetHandler(w, r, "0.00", nil)
 	})
 	mux.HandleFunc("POST /qbo", func(w http.ResponseWriter, r *http.Request) {
 		handlers.QboPostHandler(w, r)

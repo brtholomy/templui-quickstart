@@ -61,11 +61,12 @@ func SetupQboClient() *quickbooks.Client {
 	return client
 }
 
-func FillInvoice() quickbooks.Invoice {
+func FillInvoice(amount string) quickbooks.Invoice {
 	var invoice quickbooks.Invoice
 	if err := json.Unmarshal([]byte(INVOICE), &invoice); err != nil {
 		panic(err)
 	}
+	invoice.Line[0].Amount = json.Number(amount)
 	return invoice
 }
 
@@ -78,16 +79,24 @@ func QboPostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := SetupQboClient()
-	invoice := FillInvoice()
+	invoice := FillInvoice(amount)
 	resp, err := client.CreateInvoice(&invoice)
 	if err != nil {
 		panic(err)
 	}
 
-	QboGetHandler(w, r, amount, resp.DocNumber)
+	QboGetHandler(w, r, amount, resp)
 }
 
-func QboGetHandler(w http.ResponseWriter, r *http.Request, amount, docnum string) {
-	component := pages.Qbo(amount, docnum)
+func QboGetHandler(w http.ResponseWriter, r *http.Request, amount string, invoice *quickbooks.Invoice) {
+	invstr := ""
+	if invoice != nil {
+		jsonBytes, err := json.MarshalIndent(invoice, "", "  ")
+		if err != nil {
+			panic(err)
+		}
+		invstr = string(jsonBytes)
+	}
+	component := pages.Qbo(amount, invstr)
 	component.Render(r.Context(), w)
 }
