@@ -33,7 +33,11 @@ templ Qbo(amount, resp string) {
 						}
 						@input.Input(input.Props{
 							ID:          "amount-form",
-							Attributes: templ.Attributes{"name": "amount"},
+							Attributes: templ.Attributes{
+								"name": "amount",
+								"step": "0.01",
+								"min": "0.00",
+							},
 							Type:        input.TypeNumber,
 							Placeholder: "0.00",
 						})
