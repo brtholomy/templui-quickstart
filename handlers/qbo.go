@@ -26,21 +26,21 @@ import (
 // 	pages.Qbo(resp).Render(r.Context(), w)
 // }
 
-func LoadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error) {
+func loadClient(token *quickbooks.BearerToken) (c *quickbooks.Client, err error) {
 	clientId := os.Getenv("CLIENT_ID")
 	clientSecret := os.Getenv("SECRET")
 	realmId := os.Getenv("REALM_ID")
 	return quickbooks.NewClient(clientId, clientSecret, realmId, false, "", token)
 }
 
-func SetupQboClient() *quickbooks.Client {
+func setupQboClient() *quickbooks.Client {
 	// FIXME: load from DB:
 	token := quickbooks.BearerToken{
 		RefreshToken: os.Getenv("REFRESH_TOKEN"),
 		AccessToken:  os.Getenv("ACCESS_TOKEN"),
 	}
 
-	client, err := LoadClient(&token)
+	client, err := loadClient(&token)
 	if err != nil {
 		panic(err)
 	}
@@ -61,7 +61,7 @@ func SetupQboClient() *quickbooks.Client {
 	return client
 }
 
-func FillInvoice(amount string) quickbooks.Invoice {
+func fillInvoice(amount string) quickbooks.Invoice {
 	var invoice quickbooks.Invoice
 	if err := json.Unmarshal([]byte(INVOICE), &invoice); err != nil {
 		panic(err)
@@ -78,8 +78,8 @@ func QboPostHandler(w http.ResponseWriter, r *http.Request) {
 		amount = r.Form.Get("amount")
 	}
 
-	client := SetupQboClient()
-	invoice := FillInvoice(amount)
+	client := setupQboClient()
+	invoice := fillInvoice(amount)
 	resp, err := client.CreateInvoice(&invoice)
 	if err != nil {
 		panic(err)

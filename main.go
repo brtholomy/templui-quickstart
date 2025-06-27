@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	InitDotEnv()
+	initDotEnv()
 	mux := http.NewServeMux()
 	SetupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
@@ -56,7 +56,7 @@ func main() {
 	http.ListenAndServe(":8090", mux)
 }
 
-func InitDotEnv() {
+func initDotEnv() {
 	err := godotenv.Load("/etc/secrets/.env")
 	if err != nil {
 		fmt.Println("Error loading prod .env file")
@@ -67,16 +67,16 @@ func InitDotEnv() {
 	}
 }
 
-func SetupAssetsRoutes(mux *http.ServeMux) {
-	var isDevelopment = os.Getenv("GO_ENV") != "production"
+func setupAssetsRoutes(mux *http.ServeMux) {
+	var is_development = os.Getenv("GO_ENV") != "production"
 
-	assetHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if isDevelopment {
+	asset_handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if is_development {
 			w.Header().Set("Cache-Control", "no-store")
 		}
 
 		var fs http.Handler
-		if isDevelopment {
+		if is_development {
 			fs = http.FileServer(http.Dir("./assets"))
 		} else {
 			fs = http.FileServer(http.FS(assets.Assets))
@@ -85,5 +85,5 @@ func SetupAssetsRoutes(mux *http.ServeMux) {
 		fs.ServeHTTP(w, r)
 	})
 
-	mux.Handle("GET /assets/", http.StripPrefix("/assets/", assetHandler))
+	mux.Handle("GET /assets/", http.StripPrefix("/assets/", asset_handler))
 }
