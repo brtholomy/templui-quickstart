@@ -16,7 +16,7 @@ import (
 func main() {
 	initDotEnv()
 	mux := http.NewServeMux()
-	SetupAssetsRoutes(mux)
+	setupAssetsRoutes(mux)
 	mux.Handle("GET /", templ.Handler(pages.Landing()))
 
 	// dynamic:
